@@ -18,7 +18,7 @@ import Foundation
     let LATITUDE = "lat="
     let LONGITUDE = "&lon="
     let APP_ID="&appid="
-    let API_KEY = "5b8f29727a27e187f3d4fa03ecd6c8d2"
+    let API_KEY = "YOUR API KEY"
     let CURRENT_WEATHER_URL = "\(BASE_URL)\(LATITUDE)\(LATITUDE_POINT)\(LONGITUDE)\(LONGITUDE_POINT)\(APP_ID)\(API_KEY)"
     //This let you know that the process is compoleted
     typealias DownloadComplete = () -> ()
