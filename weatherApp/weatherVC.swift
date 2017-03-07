@@ -30,54 +30,68 @@ class weatherVC: UIViewController , UITableViewDelegate, UITableViewDataSource, 
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
-        
-        LocationManager.delegate = self
-        LocationManager.desiredAccuracy = kCLLocationAccuracyBest //use the best prised location
-        LocationManager.requestWhenInUseAuthorization() // request locaation when in use
-        LocationManager.startMonitoringSignificantLocationChanges() // start momitoring location
-        
-        
-        
-       // print(" the is the current weather \(currentWeather.currentTemp)")
+        LocationAuthStatus()
         
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-          LocationAuthStatus()
-    }
+
     
     func LocationAuthStatus(){
-        
-        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse{
-            //currentLocation = CLLocation()
-            currentLocation = LocationManager.location
-            Location.sharedInstance.latitude = currentLocation.coordinate.latitude
-            Location.sharedInstance.longitude = currentLocation.coordinate.longitude
-            print("coordinate", currentLocation.coordinate.longitude, currentLocation.coordinate.latitude)
-            print("Coordinate", Location.sharedInstance.latitude, Location.sharedInstance.longitude)
-            print("Coord", F_WEATHER_URL )
-            print("Coord", CURRENT_WEATHER_URL )
-            
-            currentWeather.downloadWeatherDetails {
-                self.downloadFocastWeatherdata {
-                    self.updateMainui()
-                    
-                    
-                }
-            }
-            
-        }else{
+        switch CLLocationManager.authorizationStatus(){
+        case .authorizedAlways, .authorizedWhenInUse:
+            LocationManager.delegate = self
+            LocationAuthorized()
+            print("Authorized !!")
+        case .notDetermined:
+            LocationManager.delegate = self
             LocationManager.requestWhenInUseAuthorization()
-            LocationAuthStatus()
+            print("Asking For Permission")
+        case .denied:
+            print("Showig alert with Link to Settings")
+        case .restricted:
+            //Theres nothi one can do. App cannot use location services
+            
+            break
         }
     }
+    
+    
+    //Getting the precized location if authorized
+    func LocationAuthorized(){
+        LocationManager.desiredAccuracy = kCLLocationAccuracyBest //use the best prised location
+        LocationManager.startMonitoringSignificantLocationChanges()
+        LocationManager.startUpdatingLocation()
+        currentLocation = LocationManager.location
+        Location.sharedInstance.latitude = currentLocation.coordinate.latitude
+        Location.sharedInstance.longitude = currentLocation.coordinate.longitude
+        
+        print(Location.sharedInstance.latitude ,Location.sharedInstance.longitude,CURRENT_WEATHER_URL)
+        currentWeather.downloadWeatherDetails {
+            self.downloadFocastWeatherdata {
+                self.updateMainui()
+                
+                
+            }
+        }
+    }
+    
+    //Check if authoirized to use location
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status  == .authorizedWhenInUse || status == .authorizedAlways{
+            print("Checking!!")
+            LocationAuthorized()
+        }else if status == .denied{
+            print("What Why")
+        }
+    }
+
     
     
     func downloadFocastWeatherdata(compledted: @escaping DownloadComplete){
         let forcastURL = URL(string: F_WEATHER_URL)!
         Alamofire.request(forcastURL).responseJSON { response in
             let result = response.result
+            print(response)
             if let dict = result.value as? Dictionary<String, AnyObject>{
                 if let list = dict["list"] as? [Dictionary<String, AnyObject>]{
                     for object in list{
@@ -85,7 +99,11 @@ class weatherVC: UIViewController , UITableViewDelegate, UITableViewDataSource, 
                         self.forcasts.append(forCast)
                         print(object)
                     }
-                    self.forcasts.remove(at: 0)
+                    //self.forcasts.remove(at: 0)
+                    for obj in self.forcasts{
+                        print("Hey im here",obj.date)
+                    }
+                    
                     self.tableView.reloadData()
                 }
             }

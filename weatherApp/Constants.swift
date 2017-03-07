@@ -18,8 +18,8 @@ import Foundation
     let LATITUDE = "lat="
     let LONGITUDE = "&lon="
     let APP_ID="&appid="
-    let API_KEY = " YOUR API KEY "
-    let CURRENT_WEATHER_URL = "\(BASE_URL)\(LATITUDE)\(LATITUDE_POINT)\(LONGITUDE)\(LONGITUDE_POINT)\(APP_ID)\(API_KEY)"
+    let API_KEY = "5b8f29727a27e187f3d4fa03ecd6c8d2"
+    //let CURRENT_WEATHER_URL = "\(BASE_URL)\(LATITUDE)\(LATITUDE_POINT)\(LONGITUDE)\(LONGITUDE_POINT)\(APP_ID)\(API_KEY)"
     //This let you know that the process is compoleted
     typealias DownloadComplete = () -> ()
     
@@ -31,4 +31,7 @@ import Foundation
     let F_LONGITUDE = "&lon="
     let F_APP_ID="&appid="
     let F_COUNT = "&\(10)"
-    let F_WEATHER_URL = "\(F_BASE_URL)\(F_LATITUDE)\(LATITUDE_POINT)\(F_LONGITUDE)\(LONGITUDE_POINT)\(F_COUNT)\(F_APP_ID)\(API_KEY)"
+    //let F_WEATHER_URL = "\(F_BASE_URL)\(F_LATITUDE)\(LATITUDE_POINT)\(F_LONGITUDE)\(LONGITUDE_POINT)\(F_COUNT)\(F_APP_ID)\(API_KEY)"
+
+    let CURRENT_WEATHER_URL = "http://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=b1b15e88fa797225412429c1c50c122a1"
+    let F_WEATHER_URL = "https://samples.openweathermap.org/data/2.5/forecast/daily?lat=35&lon=139&cnt=10&appid=b1b15e88fa797225412429c1c50c122a1"
